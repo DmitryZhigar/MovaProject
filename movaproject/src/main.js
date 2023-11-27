@@ -1,11 +1,11 @@
 // main.js
 import { createApp } from 'vue';
 import App from './App.vue';
-import authenticationModule from './authentication'; // Adjust the path based on your project structure
+import store from './store'; // Import your Vuex store
 
 const app = createApp(App);
 
-// Register the authentication module
-app.use(authenticationModule);
+// Use the Vuex store
+app.use(store);
 
 app.mount('#app');

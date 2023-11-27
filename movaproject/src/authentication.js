@@ -1,43 +1,49 @@
-// authentication.js
 import { registerUser, loginUser } from '@/apiService';
 
-const state = {
+const state = () => ({
   isLoggedIn: !!localStorage.getItem('jwtToken'),
+});
+
+const mutations = {
+  setLoggedIn(state, value) {
+    state.isLoggedIn = value;
+  },
 };
 
 const actions = {
-  async performRegistration(regUserName,regPassword) {
+  async performRegistration({ commit }, { userName, password }) {
     try {
-      const token = await registerUser(regUserName, regPassword);
+      const token = await registerUser(userName, password);
       console.log('Registration successful. Token:', token);
-      state.isLoggedIn = true;
-      localStorage.setItem('jwtToken', token); // Assuming your API returns a token
+      commit('setLoggedIn', true);
+      localStorage.setItem('jwtToken', token);
     } catch (error) {
-        console.error('Registration failed:', error);
-        console.error('Response details:', error.response);
-      }
+      console.error('Registration failed:', error);
+      console.error('Response details:', error.response);
+    }
   },
 
-  async performLogin({ loginUserName,loginPassword }) {
+  async performLogin({ commit }, { userName, password }) {
     try {
-      const token = await loginUser(loginUserName,loginPassword);
+      const token = await loginUser(userName, password);
       console.log('Login successful. Token:', token);
-      state.isLoggedIn = true;
-      localStorage.setItem('jwtToken', token); // Assuming your API returns a token
+      commit('setLoggedIn', true);
+      localStorage.setItem('jwtToken', token);
     } catch (error) {
-        console.error('Registration failed:', error);
-        console.error('Response details:', error.response);
-      }
+      console.error('Login failed:', error);
+      console.error('Response details:', error.response);
+    }
   },
 
-  logout({ state }) {
+  logout({ commit }) {
     localStorage.removeItem('jwtToken');
-    state.isLoggedIn = false;
+    commit('setLoggedIn', false);
   },
 };
 
 export default {
   namespaced: true,
   state,
+  mutations,
   actions,
 };
